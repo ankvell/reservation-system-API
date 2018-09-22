@@ -19,6 +19,19 @@ class Reservations {
     let err, response;
     [err, response] = await _to(ReservationService.getReservationById(req.params.reservation_id));
 
+    if (reservation) {
+        const reservationInfo = {
+            reservation: {
+                table: { number: response.number, capacity: response.capacity },
+                id: response.id,
+                guests: response.guests,
+                start: response.start,
+                end: response.end
+            }
+        }
+        res.status(200).json(reservationInfo);
+    }
+
     if (err) throw new Error('Error occurred while getting reservation data');
     res.sendStatus(200);
   }
@@ -32,7 +45,9 @@ class Reservations {
     [err, response] = await _to(ReservationService.delete(req.params.reservation_id));
 
     if (err) throw new Error('Error occurred while getting reservation data');
-    res.sendStatus(200);
+
+    if (!response) res.status(404).send('Not found');
+    else res.sendStatus(200);
   }
 }
 
