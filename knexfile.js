@@ -1,11 +1,8 @@
-// Update with your config settings.
-
 module.exports = {
-
-  production: {
-    client: 'postgresql',
+  development: {
+    client: process.env.DB_CLIENT || 'postgresql',
     connection: {
-      user: process.env.DB_USER || 'reservation',
+      user: process.env.DB_USER || 'ankvellia',
       password: process.env.DB_PASSWORD || 'reservation',
       database: process.env.DB_NAME || 'reservation',
       host: process.env.DB_HOST || '127.0.0.1'
@@ -17,6 +14,7 @@ module.exports = {
     },
     migrations: {
       tableName: 'knex_migrations'
-    }
+    },
+    debug: true
   }
 };
