@@ -10,8 +10,15 @@ class ReservationService {
       .first();
   };
 
-  static create(data) {
-    return db('reservations').insert(data, '*');
+  static checkReservedSlots(start, end) {
+    return db('reservations')
+      .select('table_id as id')
+      .where('reservations.start', '>=', start)
+      .andWhere('reservations.start', '<', end);
+  }
+
+  static create(reservation) {
+    return db('reservations').insert(reservation, '*');
   }
 
   static update(id, reservation) {
