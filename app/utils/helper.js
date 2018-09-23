@@ -9,5 +9,9 @@ class Helper {
 
     return { start, end }
   }
+
+  static checkTimeFormat(time) {
+    return _moment(time, _moment.ISO_8601, true).isValid() && _moment(time).isValid();
+  }
 }
 module.exports = Helper;
