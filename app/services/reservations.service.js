@@ -17,6 +17,14 @@ class ReservationService {
       .andWhere('reservations.start', '<', end);
   }
 
+  static checkReservedSlotsExclude(start, end, id) {
+    return db('reservations')
+      .select('table_id as id')
+      .where('reservations.start', '>=', start)
+      .andWhere('reservations.start', '<', end)
+      .andWhereNot('id', id);
+  }
+
   static create(reservation) {
     return db('reservations').insert(reservation, '*');
   }

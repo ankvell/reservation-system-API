@@ -44,7 +44,22 @@ class Reservations {
   }
 
   static async updateReservation(req, res) {
-    res.sendStatus(200);
+    let err, reserved, available, response;
+    const { guests, time, duration } = req.body.reservation;
+    const { start, end } = _utils.timeTransform(time, duration);
+
+    [err, reserved] = await _to(ReservationService.checkReservedSlotsExclude(start, end, req.params.reservation_id));
+    if (err) throw new Error('Error occurred while reservation ckecking');
+
+    const reservedTablesIds = reserved.map(reservation => reservation.id);
+    [err, available] = await _to(TablesService.getAvailableTable(guests, reservedTablesIds));
+
+    if (available) {
+        [err, response] = await _to(ReservationService.update(req.params.reservation_id, { guests, start, end, table_id: available.id }));
+        res.sendStatus(200);
+    } else {
+        res.status(404).send('No available tables for reservation');
+    }
   }
 
   static async deleteReservation(req, res) {
